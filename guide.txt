@@ -1,0 +1,332 @@
+#################################################################################
+#                                                                               #
+#                     PANDUAN LENGKAP TEKNIS PROYEK REN'PY                      #
+#                                                                               #
+#  Dokumen ini menjelaskan konsep inti, struktur folder, dan langkah-langkah     #
+#  teknis untuk membuat proyek visual novel sederhana menggunakan Ren'Py.        #
+#                                                                               #
+#################################################################################
+
+#################################################################################
+# DAFTAR ISI                                                                    #
+#################################################################################
+# 1.  Apa itu Ren'Py?                                                          #
+# 2.  Persiapan dan Instalasi                                                   #
+# 3.  Struktur Folder Proyek (Poin Penting!)                                    #
+# 4.  Konsep Inti dan Sintaks Dasar                                             #
+#     4.1. Statement (Pernyataan)                                               #
+#     4.2. Karakter dan Dialog                                                  #
+#     4.3. Menampilkan Gambar (Scene dan Show)                                  #
+#     4.4. Transisi                                                             #
+#     4.5. Musik dan Efek Suara                                                 #
+#     4.6. Pilihan (Menu) dan Alur Cerita                                       #
+#     4.7. Label, Jump, dan Return                                              #
+# 5.  Proyek Praktis: Membuat Scene Interaktif Sederhana                         #
+#     5.1. Langkah 1: Persiapan Aset                                            #
+#     5.2. Langkah 2: Menulis Kode di script.rpy                                #
+#     5.3. Langkah 3: Menjalankan dan Menguji                                   #
+# 6.  Konsep Lanjutan yang Perlu Diketahui                                      #
+# 7.  Penutup                                                                   #
+#################################################################################
+
+#################################################################################
+# 1. APA ITU REN'PY?                                                            #
+#################################################################################
+#
+# Ren'Py adalah mesin game (game engine) gratis dan sumber terbuka (open-source)
+# yang dikhususkan untuk membuat visual novel dan game bercerita.
+#
+# Keunggulannya:
+# - Mudah dipelajari untuk pemula.
+# - Menggunakan sintaks yang mirip dengan bahasa skrip sederhana.
+# - Berbasis Python, memungkinkan integrasi kode Python yang kompleks.
+# - Lintas platform (Windows, macOS, Linux, Android, iOS, Web).
+#
+#################################################################################
+
+#################################################################################
+# 2. PERSIAPAN DAN INSTALASI                                                    #
+#################################################################################
+#
+# 1. Unduh Ren'Py dari situs resmi: https://www.renpy.org/
+#    Pilih versi terbaru yang sesuai dengan sistem operasi Anda.
+#
+# 2. Ren'Py tidak memerlukan instalasi tradisional. Cukup ekstrak file ZIP
+#    yang telah diunduh ke sebuah folder.
+#
+# 3. Buka folder tersebut dan jalankan aplikasi 'renpy.exe' (Windows) atau
+#    'renpy.sh' (Linux/macOS). Ini akan membuka Ren'Py Launcher.
+#
+# 4. Dari launcher, Anda dapat membuat proyek baru, membuka proyek yang ada,
+#    atau mencoba "The Question" (proyek demo).
+#
+#################################################################################
+
+#################################################################################
+# 3. STRUKTUR FOLDER PROYEK (PONTING!)                                          #
+#################################################################################
+#
+# Ketika Anda membuat proyek baru (misalnya bernama "GameSaya"), Ren'Py akan
+# membuat folder utama "GameSaya". Di dalamnya, struktur folder yang paling
+# penting adalah sebagai berikut:
+#
+# GameSaya/
+# ├── game/                  <-- FOLDER TERPENTING. Semua aset dan skrip ada di sini.
+# │   ├── images/            <-- Tempat menyimpan semua file gambar (.png, .jpg)
+# │   │   ├── bg_lounge.png
+# │   │   └── character_smile.png
+# │   │
+# │   ├── audio/             <-- Tempat menyimpan musik dan suara (.ogg, .mp3)
+# │   │   ├── theme.ogg
+# │   │   └── door_slam.wav
+# │   │
+# │   ├── script.rpy         <-- FILE UTAMA. Di sinilah Anda menulis cerita.
+# │   │
+# │   ├── options.rpy        <-- File konfigurasi engine (resolusi, audio, dll).
+# │   │
+# │   ├── gui/               <-- Folder untuk mengkustomisasi antarmuka (tombol, slider).
+# │   │
+# │   └── tl/                <-- Folder untuk terjemahan (jika membuat multi-bahasa).
+# │
+# └── (File lain seperti archive.rpa akan muncul setelah build/distribusi)
+#
+# ATURAN EMAS: Semua aset yang akan digunakan dalam game (gambar, suara) HARUS
+#              berada di dalam folder 'game/' atau sub-foldernya.
+#
+#################################################################################
+
+#################################################################################
+# 4. KONSEP INTI DAN SINTAKS DASAR                                             #
+#################################################################################
+#
+# Semua kode Ren'Py ditulis dalam file berekstensi .rpy. Kode dibaca dari atas
+# ke bawah.
+
+# -------------------------------------------------------------------------------
+# 4.1. Statement (Pernyataan)
+# -------------------------------------------------------------------------------
+# Setiap baris perintah dalam Ren'Py disebut 'statement'. Statement tidak
+# perlu diakhiri dengan titik koma (;).
+
+# -------------------------------------------------------------------------------
+# 4.2. Karakter dan Dialog
+# -------------------------------------------------------------------------------
+# Sebelum karakter bisa berbicara, Anda harus mendefinisikannya terlebih dahulu.
+# Ini biasanya dilakukan di blok 'init'.
+
+init:
+    # Mendefinisikan karakter dengan nama "Alex" dan warna teks biru muda.
+    define a = Character("Alex", color="#c8ffc8")
+
+    # Mendefinisikan narator (teks tanpa nama pembicara).
+    define n = Character(narrator=True)
+
+# Sekarang, Anda bisa menggunakan mereka untuk dialog.
+label start:
+    n "Ini adalah narasi. Teks ini muncul tanpa nama pembicara."
+    a "Halo, nama saya Alex. Senang bertemu denganmu!"
+
+# -------------------------------------------------------------------------------
+# 4.3. Menampilkan Gambar (Scene dan Show)
+# -------------------------------------------------------------------------------
+# 'scene' digunakan untuk menampilkan gambar latar belakang dan membersihkan
+# layar dari semua gambar karakter sebelumnya.
+# 'show' digunakan untuk menampilkan gambar (biasanya karakter atau objek)
+# di atas latar belakang yang sudah ada.
+
+# Gambar harus dideklarasikan terlebih dahulu.
+image bg lounge = "images/bg_lounge.png"
+image alex smile = "images/character_smile.png"
+
+label contoh_gambar:
+    scene bg lounge
+    show alex smile at center
+    a "Ini adalah latar lounge, dan saya berada di tengah layar."
+
+# -------------------------------------------------------------------------------
+# 4.4. Transisi
+# -------------------------------------------------------------------------------
+# Untuk membuat perpindahan antar scene atau gambar menjadi halus, gunakan
+# statement 'with'.
+
+label contoh_transisi:
+    scene bg lounge
+    with dissolve
+    "Layar memudar dari hitam ke latar lounge."
+
+    show alex smile
+    with fade
+    "Karakter Alex muncul dengan efek fade in."
+
+# Jenis transisi lain: 'dissolve', 'fade', 'pixellate', 'move', dll.
+
+# -------------------------------------------------------------------------------
+# 4.5. Musik dan Efek Suara
+# -------------------------------------------------------------------------------
+# 'play music' untuk memutar musik latar yang diulang.
+# 'play sound' untuk memutar efek suara sekali.
+# 'stop' untuk menghentikan musik/suara.
+
+label contoh_audio:
+    play music "audio/theme.ogg"
+    "Musik tema mulai bermain dan akan berulang."
+
+    play sound "audio/door_slam.wav"
+    "Suara pintu ditutup keras diputar sekali."
+
+    stop music
+    "Musik berhenti."
+
+# -------------------------------------------------------------------------------
+# 4.6. Pilihan (Menu) dan Alur Cerita
+# -------------------------------------------------------------------------------
+# Statement 'menu' adalah inti dari interaktivitas dalam visual novel.
+# Ini akan menampilkan daftar pilihan kepada pemain.
+
+label contoh_pilihan:
+    a "Apakah kamu ingin minum kopi atau teh?"
+    menu:
+        "Kopi, terima kasih.":
+            jump pilihan_kopi
+        "Teh, tolong.":
+            jump pilihan_teh
+
+# -------------------------------------------------------------------------------
+# 4.7. Label, Jump, dan Return
+# -------------------------------------------------------------------------------
+# 'label' adalah penanda sebuah bagian dari skrip. Digunakan untuk tujuan navigasi.
+# 'jump' melompat ke 'label' tertentu dan melanjutkan eksekusi dari sana.
+# 'return' kembali ke tempat 'jump' terakhir terjadi. Jika tidak ada 'jump',
+# 'return' akan mengakhiri game dan kembali ke menu utama.
+
+label pilihan_kopi:
+    a "Baik, saya akan buatkan kopi."
+    "Alex pergi ke dapur dan kembali dengan secangkir kopi hangat."
+    return  # Kembali ke setelah menu di label 'contoh_pilihan'
+
+label pilihan_teh:
+    a "Teh adalah pilihan yang baik juga."
+    "Alex menyeduh teh untuk Anda."
+    return  # Kembali ke setelah menu di label 'contoh_pilihan'
+
+#################################################################################
+# 5. PROYEK PRAKTIS: MEMBUAT SCENE INTERAKTIF SEDERHANA                         #
+#################################################################################
+#
+# Mari kita gabungkan semua konsep di atas menjadi satu proyek kecil.
+# Ganti seluruh isi file 'game/script.rpy' Anda dengan kode di bawah ini.
+
+# -------------------------------------------------------------------------------
+# 5.1. Langkah 1: Persiapan Aset
+# -------------------------------------------------------------------------------
+# Buat folder 'images' dan 'audio' di dalam folder 'game' proyek Anda.
+# Siapkan 3 file:
+# 1. Sebuah gambar latar belakang, simpan sebagai 'images/park.jpg'
+# 2. Sebuah gambar karakter tersenyum, simpan sebagai 'images/lena_happy.png'
+# 3. Sebuah file musik, simpan sebagai 'audio/calm.ogg'
+# (Jika tidak punya, Anda bisa menggunakan file dari proyek demo "The Question")
+
+# -------------------------------------------------------------------------------
+# 5.2. Langkah 2: Menulis Kode di script.rpy
+# -------------------------------------------------------------------------------
+# Salin kode berikut ke dalam file 'game/script.rpy' Anda.
+
+# --- AWAL KODE UNTUK script.rpy ---
+
+# Blok init: dijalankan sekali saat game dimulai. Tempat ideal untuk mendefinisikan.
+init:
+    # Mendefinisikan karakter
+    define l = Character("Lena", color="#ffccff")
+    define n = Character(narrator=True)
+
+    # Mendefinisikan gambar agar bisa dipanggil dengan nama
+    image bg park = "images/park.jpg"
+    image lena happy = "images/lena_happy.png"
+
+# Label start: titik awal cerita Anda
+label start:
+
+    # Tampilkan latar belakang dengan transisi dissolve
+    scene bg park
+    with dissolve
+
+    # Mainkan musik latar
+    play music "audio/calm.ogg"
+
+    # Narasi pembuka
+    n "Sore itu, aku bertemu dengan Lena di taman kota."
+
+    # Tampilkan karakter Lena dengan transisi fade
+    show lena happy at left
+    with fade
+
+    # Dialog
+    l "Hai! Senang sekali bisa bertemu di sini. Cuacanya sangat menyenangkan, bukan?"
+
+    # Berikan pilihan kepada pemain
+    n "Aku menjawab..."
+    menu:
+        "Iya, sangat cerah. Sempurna untuk jalan-jalan.":
+            jump respons_positif
+        "Agak panas, sih. Tapi tidak apa-apa.":
+            jump respons_netral
+
+# Label untuk respons positif
+label respons_positif:
+    l "Benar sekali! Aku berharap hari ini tidak akan pernah berakhir."
+    n "Kami pun menghabiskan sore itu dengan berbicara banyak hal."
+    return
+
+# Label untuk respons netral
+label respons_netral:
+    l "Haha, mungkin. Tapi setidaknya ada angin sepoi-sepoi."
+    n "Dia tersenyum, dan kami melanjutkan obrolan kami."
+    return
+
+# --- AKHIR KODE UNTUK script.rpy ---
+
+
+# -------------------------------------------------------------------------------
+# 5.3. Langkah 3: Menjalankan dan Menguji
+# -------------------------------------------------------------------------------
+# 1. Buka Ren'Py Launcher.
+# 2. Pilih proyek Anda dari daftar.
+# 3. Klik tombol "Launch Project" (ikon segitiga hijau) di sebelah kanan.
+# 4. Game Anda akan berjalan. Coba pilih kedua opsi untuk melihat perbedaan
+#    alur ceritanya.
+#
+#################################################################################
+
+#################################################################################
+# 6. KONSEP LANJUTAN YANG PERLU DIKETAHUI                                      #
+#################################################################################
+#
+# Setelah Anda memahami dasar-dasar di atas, eksplorasi konsep ini:
+#
+# - Python Integration: Gunakan tanda dolar ($) untuk mengeksekusi kode Python.
+#   Contoh: $ score = 0
+#
+# - Screen Language: Bahasa khusus Ren'Py untuk membuat antarmuka pengguna (UI)
+#   kustom seperti menu, inventory, atau sistem status.
+#
+# - ATL (Animation and Transformation Language): Bahasa untuk membuat animasi
+#   sederhana pada gambar (gerakan, rotasi, perubahan warna).
+#
+# - Persistent Data: Variabel yang tersimpan bahkan setelah game ditutup.
+#   Berguna untuk unlock achievement, galeri, dll.
+#
+#################################################################################
+
+#################################################################################
+# 7. PENUTUP                                                                    #
+#################################################################################
+#
+# Anda telah mempelajari fondasi teknis untuk membuat visual novel dengan Ren'Py.
+# Dari sini, langkah terbaik adalah bereksperimen.
+# Coba tambahkan lebih banyak karakter, pilihan, dan gambar.
+# Baca dokumentasi resmi Ren'Py untuk referensi lengkap:
+# https://www.renpy.org/doc/html/
+#
+# Selamat berkarya!
+#
+#################################################################################
